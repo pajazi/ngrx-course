@@ -20,9 +20,9 @@ export class HomeComponent implements OnInit {
 
     loading$: Observable<boolean>;
 
-    beginnerCourses$: Observable<Course[]>;
+    beginnerCourses$: Observable<Course[]>; //These values here are tied to the component lifecycle!
 
-    advancedCourses$: Observable<Course[]>;
+    advancedCourses$: Observable<Course[]>; //These values here are tied to the component lifecycle!
 
 
     constructor(
