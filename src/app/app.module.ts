@@ -22,12 +22,14 @@ import {EffectsModule} from '@ngrx/effects';
 import {EntityDataModule} from '@ngrx/data';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { reducers, metaReducers } from './reducers';
+import { AuthGuard } from './auth/auth.guard';
 
 
 const routes: Routes = [
   {
     path: 'courses',
-    loadChildren: () => import('./courses/courses.module').then(m => m.CoursesModule)
+    loadChildren: () => import('./courses/courses.module').then(m => m.CoursesModule),
+    canActivate: [AuthGuard] //any part will be protected by the auth guard
   },
   {
     path: '**',
@@ -54,7 +56,8 @@ const routes: Routes = [
     MatToolbarModule,
     AuthModule.forRoot(),
     StoreModule.forRoot(reducers, { metaReducers }), //Initializes store for the app (empty object) { }
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }) //For store development tools
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }), //For store development tools
+    EffectsModule.forRoot([])
   ],
   bootstrap: [AppComponent]
 })
