@@ -55,9 +55,21 @@ const routes: Routes = [
     MatListModule,
     MatToolbarModule,
     AuthModule.forRoot(),
-    StoreModule.forRoot(reducers, { metaReducers }), //Initializes store for the app (empty object) { }
+    StoreModule.forRoot(reducers, { 
+      metaReducers, //Its just like a plain reducer (example authReducer), difference is that this meta reducer is invoked before all other actions/reducers! 
+      runtimeChecks: {
+        strictStateImmutability: true, //property to check if OnPush doesen't brake!, state.user = user return state!!! X!!!!!NOT
+        strictActionImmutability: true, //actions are immutable as well!
+        strictActionSerializability: true, //actions are serializable, that can be saved by the 
+        strictStateSerializability: true //Insures that the state inside the store is always serializable!
+      }
+    }), //Initializes store for the app (empty object) { }
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }), //For store development tools
-    EffectsModule.forRoot([])
+    EffectsModule.forRoot([]),
+    StoreRouterConnectingModule.forRoot({
+      stateKey: 'router',
+      routerState: RouterState.Minimal //saves the router in the store, in order to recreate the time travel debugger
+    })
   ],
   bootstrap: [AppComponent]
 })
