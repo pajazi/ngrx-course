@@ -53,7 +53,7 @@ const routes: Routes = [
     MatListModule,
     MatToolbarModule,
     AuthModule.forRoot(),
-    StoreModule.forRoot(reducers, { metaReducers }), //Initializes store for the app (empty object)
+    StoreModule.forRoot(reducers, { metaReducers }), //Initializes store for the app (empty object) { }
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }) //For store development tools
   ],
   bootstrap: [AppComponent]

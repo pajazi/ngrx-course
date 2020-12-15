@@ -7,6 +7,8 @@ import {AuthService} from "../auth.service";
 import {tap} from "rxjs/operators";
 import {noop} from "rxjs";
 import {Router} from "@angular/router";
+import { AppState } from '../../reducers';
+import { login } from '../auth.actions';
 
 @Component({
   selector: 'login',
@@ -18,14 +20,15 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
 
   constructor(
-      private fb:FormBuilder,
-      private auth: AuthService,
-      private router:Router) {
+    private fb:FormBuilder,
+    private auth: AuthService,
+    private router:Router,
+    private store: Store<AppState>) { //<type of the state inside the store>
 
-      this.form = fb.group({
-          email: ['test@angular-university.io', [Validators.required]],
-          password: ['test', [Validators.required]]
-      });
+    this.form = fb.group({
+      email: ['test@angular-university.io', [Validators.required]],
+      password: ['test', [Validators.required]]
+    });
 
   }
 
@@ -35,6 +38,18 @@ export class LoginComponent implements OnInit {
 
   login() {
 
+    const formValue = this.form.value;
+    this.auth.login(formValue.email, formValue.password)
+      .pipe(
+        tap(user => {
+          console.log(user)
+
+          this.store.dispatch(login({user})) //Action does not modify the state we need reducer for that
+
+          this.router.navigateByUrl('/courses')
+        })
+      )
+      .subscribe(noop, () => alert('something went wrong!'))
   }
 
 }
