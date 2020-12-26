@@ -21,24 +21,46 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {RouterModule, Routes} from '@angular/router';
-import { EntityDataService, EntityDefinitionService, EntityMetadataMap} from '@ngrx/data';
+import {EntityDataService, EntityDefinitionService, EntityMetadataMap} from '@ngrx/data';
 import {compareCourses, Course} from './model/course';
 
-import {compareLessons, Lesson} from './model/lesson';
+import { compareLessons, Lesson } from './model/lesson';
+import { CourseEntityService } from './services/course-entity.service';
+import { CoursesResolver } from './services/courses.resolver';
+import { CoursesDataService } from './services/courses-data.service';
+import { LessonEntityService } from './services/lesson-entity.service';
 
 
 export const coursesRoutes: Routes = [
   {
     path: '',
-    component: HomeComponent
-
+    component: HomeComponent,
+    resolve: {
+      courses: CoursesResolver
+    }
   },
   {
     path: ':courseUrl',
-    component: CourseComponent
+    component: CourseComponent,
+    resolve: {
+      courses: CoursesResolver
+    }
   }
 ];
 
+const entityMetadata: EntityMetadataMap = { //courses, lessons...
+  Course: {
+    //selectId, sortComparer, entityName...
+    //Optimistic, Pesimistic CRUD
+    sortComparer: compareCourses, //sort by seqNo
+    entityDispatcherOptions: {
+      optimisticUpdate: true //Optimistic UPDATE!
+    }
+  },
+  Lesson: {
+    sortComparer: compareLessons
+  }
+}
 
 @NgModule({
   imports: [
@@ -74,12 +96,23 @@ export const coursesRoutes: Routes = [
   ],
   entryComponents: [EditCourseDialogComponent],
   providers: [
-    CoursesHttpService
+    CoursesHttpService,
+    CourseEntityService,
+    CoursesResolver,
+    CoursesDataService,
+    LessonEntityService
   ]
 })
 export class CoursesModule {
 
-  constructor() {
+  constructor(
+    private eds: EntityDefinitionService,
+    private entityDataService: EntityDataService,
+    private coursesDataService: CoursesDataService) {
+
+    eds.registerMetadataMap(entityMetadata)
+
+    entityDataService.registerService('Course', coursesDataService); //override default behavior for fethcing data /api/courses (example) -> customizable
 
   }
 

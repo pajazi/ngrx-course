@@ -66,6 +66,7 @@ const routes: Routes = [
     }), //Initializes store for the app (empty object) { }
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }), //For store development tools
     EffectsModule.forRoot([]),
+    EntityDataModule.forRoot({}), //no entity in app.module, everything in submodules
     StoreRouterConnectingModule.forRoot({
       stateKey: 'router',
       routerState: RouterState.Minimal //saves the router in the store, in order to recreate the time travel debugger
