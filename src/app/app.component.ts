@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
             this.store.dispatch(login({user: JSON.parse(userProfile)}));
         }
 
-        this.router.events.subscribe(event => {
+        this.router.events.subscribe(event => { //pametno?
             switch (true) {
                 case event instanceof NavigationStart: {
                     this.loading = true;
